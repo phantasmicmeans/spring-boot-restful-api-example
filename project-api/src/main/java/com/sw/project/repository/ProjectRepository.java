@@ -4,9 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import com.sw.project.domain.Project;
-/*
- * CrudRepository<T,ID>, PagingAndSortingRepository<T,ID>, QueryByExampleExecutor<T>, Repository<T,ID>
- */
+
 public interface ProjectRepository extends JpaRepository<Project, String> {
 	
 	
@@ -18,6 +16,10 @@ public interface ProjectRepository extends JpaRepository<Project, String> {
 
 /*
 Interface JpaRepository<T,ID>
+
+ *
+ * CrudRepository<T,ID>, PagingAndSortingRepository<T,ID>, QueryByExampleExecutor<T>, Repository<T,ID>
+ *
 
 All MethodsInstance MethodsAbstract Methods
 Modifier and Type	Method and Description

@@ -21,6 +21,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sw.project.domain.Project;
+import com.sw.project.exception.DataFormatException;
+import com.sw.project.exception.ElementNullException;
 import com.sw.project.exception.ResourceNotFoundException;
 import com.sw.project.service.ProjectService;
 
@@ -36,61 +38,39 @@ public class ProjectController {
 			produces = {"application/json", "application/xml"})
 	public ResponseEntity<?> GetProject(@Valid @PathVariable("code") final String code) { //code를 인자로 프로젝트 찾음. 
 	
+		if(code.length() < 6 || code.equals("")) 
+			throw new DataFormatException("Please Check your code");
+				
 		Project project = projectService.findProjectByCode(code);
-
-		try{
-			checkNullPointer(project); //project가 null이면 -> throw NoSuchElement
-
-			return new ResponseEntity<Project> (project, HttpStatus.OK);
-
-		}catch(NoSuchElementException e) {
-			String result = "Cannot find Project with Your code";
-			return new ResponseEntity<String> (getJson(result), HttpStatus.NOT_FOUND);
-		}
+		
+		if(project == null) //find project -> 404
+			throw new ResourceNotFoundException("No Project with that code");
+		
+		return new ResponseEntity<Project> (project, HttpStatus.OK);
+		
 	}
 
-	
 	@RequestMapping(value = "/", method = RequestMethod.POST,
 			consumes = {"application/json"},
 			produces = {"application/json"})
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<?> createProject(@Valid @RequestBody Project project) {
 
+		if(project.getTitle().length() < 5)
+			throw new DataFormatException("Title must be more than length 5");
+		
 		project = new Project(project.getTitle());
-
+		
 		if(projectService.saveProject(project))	{ 	//title만 받고, code는 생성자가 랜덤으로 생성.
 			
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand(project.getTitle()).toUri();
-			
 			return ResponseEntity.created(location).build();
 		}
-		String result = "Data Not Valid, Please Check Yout title";
+		String result = "Data Not Valid, Please Check Your title";
 		return new ResponseEntity<String> (getJson(result), HttpStatus.BAD_REQUEST);
-		/*
-		 * 
-		HttpHeaders he = new HttpHeaders();
-		he.add("Bad Request", "Data Not Valid, Please Check Your Title");
-		return ResponseEntity.badRequest().headers(he).body(project);
 
-		*/
 	}
-	
-	@ExceptionHandler(ResourceNotFoundException.class)
-	private <T> T checkResourceNull(final T resource) { /* ResourceNotFoundException Handler */
 
-		return resource;
-	}
-	
-	@ExceptionHandler(NullPointerException.class)
-	private <T> T checkNullPointer(final T resource) {
-		
-		if(resource==null) {
-			throw new NoSuchElementException();
-		}
-		
-		return resource;
-	}
-	
 	public String getJson(String ipt) { /*String to Json Converter*/ 
 		
 		JsonObject object = new JsonObject();

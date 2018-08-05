@@ -15,7 +15,7 @@ import org.hibernate.annotations.NotFoundAction;
 
 @Entity
 @Table(name = "Problem")
-public class Problem extends AuditModel{
+public class Problem{
 
 	/**
 	 * 
@@ -30,6 +30,7 @@ public class Problem extends AuditModel{
 	@Column(name = "title")
 	private String title;
 	
+
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name = "code", referencedColumnName = "code", nullable = false)
 	@NotFound(action = NotFoundAction.IGNORE)
@@ -55,6 +56,9 @@ public class Problem extends AuditModel{
 		this.title = title;
 	}
 	
+	public String getProblemCode() {
+		return this.project.getCode();
+	}
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
