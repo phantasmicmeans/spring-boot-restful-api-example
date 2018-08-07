@@ -32,7 +32,7 @@ public class Project implements Serializable  {
 	@Column(name = "title",nullable=false)
 	private String title;
 	
-	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set <Problem> problems = new HashSet<>();
 
 	public Project() {

@@ -8,5 +8,6 @@ public interface ProjectService {
 
 	String saveProject(Project project);
 	Optional<Project> findProjectByCode(String code);
+	Boolean deleteProjectByCode(String code);
 	
 }

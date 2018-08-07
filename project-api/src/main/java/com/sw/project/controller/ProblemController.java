@@ -21,6 +21,7 @@ import com.sw.project.domain.Problem;
 import com.sw.project.domain.Project;
 import com.sw.project.exception.DataFormatException;
 import com.sw.project.exception.ElementNullException;
+import com.sw.project.exception.NotDefineException;
 import com.sw.project.exception.ResourceNotFoundException;
 import com.sw.project.repository.ProblemRepository;
 import com.sw.project.service.ProblemService;
@@ -46,7 +47,7 @@ public class ProblemController {
 		if(code.length() < 6 || code.equals(""))
 			throw new DataFormatException("Please check your code");
 		
-		Collection<Problem> problemCollection = problemRepository.findByProjectWithCode((code));
+		Collection<Problem> problemCollection = problemRepository.findByProblemWithCode((code));
 		
 		if(problemCollection.isEmpty())
 			throw new ElementNullException("No data with this code");
@@ -77,6 +78,30 @@ public class ProblemController {
 		
 		String result = "Data Not Valid, Please Check Yout title";
 		return new ResponseEntity<String> (getJson(result), HttpStatus.BAD_REQUEST);
+	}
+	
+	@RequestMapping(value = "/delete/{code}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteProblem(@Valid @PathVariable("code") final String code){
+		//code가 "code"인 데이터들을 찾아와서 	
+		
+		if(code.length() < 6 || code.equals(""))
+			throw new DataFormatException("Please check your code");
+				
+		problemService.deleteProblem(code);
+		
+		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/delete/{code}/all", method = RequestMethod.DELETE)
+	public ResponseEntity<?> deleteAllProblem(@Valid @PathVariable("code") final String code){
+		
+		if(code.length() < 6 || code.equals(""))
+			throw new DataFormatException("Please check your code");
+		
+		if(!problemService.deleteAllProblemWithCode(code))
+			throw new ResourceNotFoundException("No Problem with that code");
+		
+		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 	
 	static String getJson(String result) {

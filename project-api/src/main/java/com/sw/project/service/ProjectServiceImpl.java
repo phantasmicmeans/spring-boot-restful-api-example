@@ -36,12 +36,18 @@ public class ProjectServiceImpl implements ProjectService{
 		
 		return Optional.ofNullable(projectRepository.getProject(code));
 	}
-	
-	/*
-	public void validateProjectCode(Project project) {		//random한 code생성, unique해야함.
-	//code is unique, must check necessary
-		while(projectRepository.getProject(project.getCode())!=null) {
-			project.setCode();
+
+	@Override
+	public Boolean deleteProjectByCode(String code) {
+		
+		try {
+			projectRepository.deleteProjectByCodeInQuery(code);
+			return true;
+			
+		}catch(Exception e) {
+			return false;
 		}
-	}*/
+	}
+	
+
 }

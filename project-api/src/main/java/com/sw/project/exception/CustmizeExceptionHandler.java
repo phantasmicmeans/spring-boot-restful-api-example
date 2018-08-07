@@ -15,6 +15,14 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class CustmizeExceptionHandler extends ResponseEntityExceptionHandler{
 
 	
+	@ExceptionHandler(NotDefineException.class)
+	public ResponseEntity<CustomizeErrorDetail> Exception(NotDefineException re, WebRequest rq){
+		
+		CustomizeErrorDetail errDetail = new CustomizeErrorDetail(new Date(), re.getMessage(), rq.getDescription(false));
+		
+		return new ResponseEntity<CustomizeErrorDetail> (errDetail, HttpStatus.NOT_FOUND);
+	}
+	
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<CustomizeErrorDetail> handleResourceNotFoundException(ResourceNotFoundException re, WebRequest rq){
 		
