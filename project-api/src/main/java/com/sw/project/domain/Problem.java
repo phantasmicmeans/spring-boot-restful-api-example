@@ -59,6 +59,10 @@ public class Problem{
 	public String getProblemCode() {
 		return this.project.getCode();
 	}
+	
+	public void setProject(Project project) {
+		this.project = project;
+	}
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub

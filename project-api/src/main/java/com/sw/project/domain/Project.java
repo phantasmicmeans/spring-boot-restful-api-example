@@ -62,6 +62,9 @@ public class Project implements Serializable  {
 		this.code = randomCode();
 	}
 
+	public void addProblem(Problem problem) {
+		problems.add(problem);
+	}
 	public Set<Problem> getProblem() {
 		return problems;
 	}

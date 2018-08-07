@@ -5,13 +5,9 @@ import java.util.Collection;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sw.project.domain.Problem;
+import com.sw.project.domain.Project;
 import com.sw.project.exception.DataFormatException;
 import com.sw.project.exception.ElementNullException;
 import com.sw.project.exception.ResourceNotFoundException;
@@ -32,9 +29,7 @@ import com.sw.project.service.ProjectService;
 @RestController
 @RequestMapping(value = "/problem")
 public class ProblemController {
-	//problem 리팩토링 필요 
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	@Autowired
 	ProjectService projectService;
 	
@@ -43,7 +38,6 @@ public class ProblemController {
 	
 	@Autowired
 	ProblemRepository problemRepository;
-	
 	
 	@RequestMapping(value = "/{code}", method = RequestMethod.GET,
 			produces = {"application/json"})
@@ -62,9 +56,17 @@ public class ProblemController {
 	}
 	
 	
-	@RequestMapping(value = "/" , method = RequestMethod.POST
+	@RequestMapping(value = "/{code}" , method = RequestMethod.POST
 			,consumes = "application/json")
-	public ResponseEntity<?> saveProblem(@Valid @RequestBody Problem problem){ //save
+	public ResponseEntity<?> saveProblem(@Valid @RequestBody Problem problem ,@PathVariable("code") final String code){ //save
+		
+		if(code.length() < 6 || code.equals(""))
+			throw new DataFormatException("Please check your code");
+		
+		Project project = projectService.findProjectByCode(code)
+								.orElseThrow(() -> new ResourceNotFoundException("No Project with that Code"));
+		
+		problem.setProject(project);
 		
 		if(problemService.saveProblem(problem)) {
 			
@@ -76,13 +78,13 @@ public class ProblemController {
 		String result = "Data Not Valid, Please Check Yout title";
 		return new ResponseEntity<String> (getJson(result), HttpStatus.BAD_REQUEST);
 	}
-		
-
-	public String getJson(String ipt) { /*String to Json Converter*/ 
+	
+	static String getJson(String result) {
 		
 		JsonObject object = new JsonObject();
-		object.addProperty("result", ipt);
+		object.addProperty("result", result);
 		return new Gson().toJson(object);
-	}		
+	}
+
 	
 }

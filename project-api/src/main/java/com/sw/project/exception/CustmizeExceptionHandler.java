@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestController
 public class CustmizeExceptionHandler extends ResponseEntityExceptionHandler{
 
+	
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<CustomizeErrorDetail> handleResourceNotFoundException(ResourceNotFoundException re, WebRequest rq){
 		

@@ -5,9 +5,11 @@ import java.util.Collection;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import com.sw.project.domain.Problem;
 
+@Repository
 public interface ProblemRepository extends JpaRepository<Problem, String>{
 	
 	@Query(value = "SELECT * FROM problem WHERE code=?1",  nativeQuery = true)

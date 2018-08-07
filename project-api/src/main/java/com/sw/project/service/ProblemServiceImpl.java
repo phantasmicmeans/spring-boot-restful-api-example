@@ -15,9 +15,6 @@ public class ProblemServiceImpl implements ProblemService{
 	@Override
 	public Boolean saveProblem(Problem problem) {
 	
-		//problem은 멤버변수로 project(code), title을 가짐
-		//여기서도 또 code가 있는지 확인해야하나? 너무 IO가 많은데
-		
 		if(problem.getTitle() == null) { //have to fix it !!!!!!!!!!!!!!!!!!!!!
 			return false;
 		}
@@ -25,10 +22,6 @@ public class ProblemServiceImpl implements ProblemService{
 		problemRepository.saveAndFlush(problem);
 		return true;
 		
-		
-		
 	}
-	
-	
 	
 }
