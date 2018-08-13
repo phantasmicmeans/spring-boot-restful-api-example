@@ -61,11 +61,9 @@ public class ProjectController {
 			consumes = {"application/json"},
 			produces = {"application/json"})
 	@ApiOperation(value = "프로젝트 생성", protocols = "http", notes = "code는 자동생성, title(String) 필요")
-	public ResponseEntity<?> createProject(@ApiParam(name = "title", value = "title to send", required = true) final String title) {
-
-		Project project = new Project(title);
+	public ResponseEntity<?> createProject(@Valid @RequestBody Project project) {
 		
-		//String title = project.getTitle();
+		String title = project.getTitle();
 
 		if(title.length() < 5)
 			throw new DataFormatException("Title must be more than length 5");
@@ -87,7 +85,6 @@ public class ProjectController {
 	@RequestMapping(value = "/{code}", method = RequestMethod.DELETE)
 	@ApiOperation(value = "code로 프로젝트 삭제", protocols = "http", notes = "code 필요")
 	ResponseEntity<?> deleteProject(@Valid @PathVariable("code") final String code){
-			//@Valid @PathVariable("code") final String code){
 	
 		if(code.length() < 6 || code.equals(""))
 			throw new DataFormatException("Please Check your code");

@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -42,6 +43,8 @@ public class ProblemController {
 	@Autowired
 	ProblemRepository problemRepository;
 	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@RequestMapping(value = "/{code}", method = RequestMethod.GET,
 			produces = {"application/json"})
 	@ApiOperation(value = "code로 문제 조회", protocols = "http", notes = "code는 6자리 영문과 숫자조합")
@@ -60,16 +63,16 @@ public class ProblemController {
 	}
 	
 	
-	@RequestMapping(value = "" , method = RequestMethod.POST
+	@RequestMapping(value = "{code}" , method = RequestMethod.POST
 			,consumes = "application/json")
 	@ApiOperation(value = "문제 생성", protocols = "http", notes = "code는 6자리 영문과 숫자조합, problem parameter는 사용 X")
-	public ResponseEntity<?> saveProblem(@Valid @RequestBody Problem problem ,
-			@RequestParam("title") final String title,
-			@RequestParam("code") final String code){ //save
-
-		if(code.length() < 6 || code.equals(""))
+	public ResponseEntity<?> saveProblem(@Valid @RequestBody Problem problem,
+										 @PathVariable("code")final String code){
+	
+		if(code.length() < 6 || code.equals("")) {
+			logger.info("dfsdfsdfsdfsdf");
 			throw new DataFormatException("Please check your code");
-		
+		}
 		Project project = projectService.findProjectByCode(code)
 								.orElseThrow(() -> new ResourceNotFoundException("No Project with that Code"));
 		
