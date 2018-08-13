@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Collection;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -41,11 +42,10 @@ public class ProjectController {
 	
 	@RequestMapping(value = "/{code}", method = RequestMethod.GET,
 			produces = {"application/json", "application/xml"})
-	@ApiOperation(value = "code로 프로젝트 조회", notes = "code는 6자리 영문과 숫자조합 ")
-	@ApiParam(name = "code", value = "code to send", required = true)
-	public ResponseEntity<?> getProject(@Valid @PathVariable("code") final String code) { //code로 프로젝트 찾음(code unique). 
-												//sub-problem도 포함(Set)
-		//@ApiParam(name = "code", value = "code to send", required = true)
+	@ApiOperation(value = "code로 프로젝트 조회", protocols = "http", notes = "code는 6자리 영문과 숫자조합 ")
+	public ResponseEntity<?> getProject(@Valid @PathVariable("code") final String code){ //code로 프로젝트 찾음(code unique). 
+
+		
 		if(code.length() < 6 || code.equals("")) 
 			throw new DataFormatException("Please Check your code");
 				
@@ -57,14 +57,15 @@ public class ProjectController {
 		
 	}
 	
-	@RequestMapping(value = "/", method = RequestMethod.POST,
+	@RequestMapping(value = "", method = RequestMethod.POST,
 			consumes = {"application/json"},
 			produces = {"application/json"})
-	@ApiOperation(value = "프로젝트 생성", notes = "code는 자동생성, title(String) 필요")
-	@ApiParam(name = "title", value = "title to send(json)", required = true)
-	public ResponseEntity<?> createProject(@Valid @RequestBody Project project) {
+	@ApiOperation(value = "프로젝트 생성", protocols = "http", notes = "code는 자동생성, title(String) 필요")
+	public ResponseEntity<?> createProject(@ApiParam(name = "title", value = "title to send", required = true) final String title) {
 
-		String title = project.getTitle();
+		Project project = new Project(title);
+		
+		//String title = project.getTitle();
 
 		if(title.length() < 5)
 			throw new DataFormatException("Title must be more than length 5");
@@ -84,9 +85,9 @@ public class ProjectController {
 	}
 
 	@RequestMapping(value = "/{code}", method = RequestMethod.DELETE)
-	@ApiOperation(value = "프로젝트 삭제", notes = "code 필요")
-	@ApiParam(name = "code", value = "code to send", required = true)
+	@ApiOperation(value = "code로 프로젝트 삭제", protocols = "http", notes = "code 필요")
 	ResponseEntity<?> deleteProject(@Valid @PathVariable("code") final String code){
+			//@Valid @PathVariable("code") final String code){
 	
 		if(code.length() < 6 || code.equals(""))
 			throw new DataFormatException("Please Check your code");
