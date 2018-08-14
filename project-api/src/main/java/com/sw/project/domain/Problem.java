@@ -1,15 +1,19 @@
 package com.sw.project.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -26,11 +30,14 @@ public class Problem implements Serializable{
 	
 	@Column(name = "title")
 	private String title;
-	
 
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "code", referencedColumnName = "code", nullable = false)
 	private Project project; //Problem은 Project에 Many to one이고, 
+	
+	@OneToMany(mappedBy = "problem", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+	private Set<subProblem> subProblems = new HashSet<>();
+	
 	
 	public Problem() { }//JPA constructor
 	
@@ -59,6 +66,11 @@ public class Problem implements Serializable{
 	public void setProject(Project project) {
 		this.project = project;
 	}
+	
+	public void addSubProblem(subProblem subproblem) {
+		this.subProblems.add(subproblem);
+	}
+	
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub

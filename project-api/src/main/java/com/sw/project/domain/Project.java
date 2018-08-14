@@ -15,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import io.swagger.annotations.ApiModelProperty;
 
 @Entity
 @Table(name = "Project")
@@ -34,7 +33,7 @@ public class Project implements Serializable  {
 	@Column(name = "title",nullable=false)
 	private String title;
 	
-	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set <Problem> problems = new HashSet<>();
 
 	public Project() {
@@ -107,6 +106,5 @@ public class Project implements Serializable  {
 	@LastModifiedDate
 	private Date last_update_time;
 	*/
-	
 	
 }

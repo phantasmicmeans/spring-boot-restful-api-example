@@ -1,6 +1,7 @@
 package com.sw.project.service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +48,40 @@ public class ProblemServiceImpl implements ProblemService{
 			return true;
 		}
 	}
+
+	@Override
+	public Optional<Problem> getProblemById(Long idx) {
+		// TODO Auto-generated method stub
+		
+		return Optional.ofNullable(problemRepository.getProblem(idx));
+	}
+
+
 	
 	
 
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

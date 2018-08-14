@@ -12,10 +12,13 @@ import com.sw.project.domain.Project;
 
 @Repository
 public interface ProjectRepository extends JpaRepository<Project, String> {
-	
+		
 	@Query(value = "SELECT * FROM project WHERE code=?1",  nativeQuery = true)
 	Project getProject(String code); 
 
+	@Query(value = "SELECT idx FROM project WHERE code=?1", nativeQuery = true)
+	Long getKeyByCode(String code);
+	
 	@Modifying
 	@Transactional
 	@Query("DELETE FROM Project p WHERE p.code=:code")

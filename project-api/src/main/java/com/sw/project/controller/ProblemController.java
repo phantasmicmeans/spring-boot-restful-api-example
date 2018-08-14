@@ -80,6 +80,7 @@ public class ProblemController {
 		
 		if(problemService.saveProblem(problem)) {
 			
+			project.addProblem(problem);
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand(problem.getTitle()).toUri();
 			
 			return ResponseEntity.created(location).build();

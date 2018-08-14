@@ -13,15 +13,19 @@ import org.springframework.stereotype.Repository;
 import com.sw.project.domain.Problem;
 
 @Repository
-public interface ProblemRepository extends JpaRepository<Problem, String>{
+public interface ProblemRepository extends JpaRepository<Problem, Long>{
 	
 	@Query(value = "SELECT * FROM problem WHERE code=?1",  nativeQuery = true)
 	Collection<Problem> findByProblemWithCode(@Param("code") String code);
+	
+	@Query(value = "SELECT * FROM problem WHERE idx=?1", nativeQuery = true)
+	Problem getProblem(Long idx);
 	
 	@Modifying
 	@Transactional
 	@Query(value = "DELETE FROM problem WHERE code=?1", nativeQuery = true)
 	void deleteProblem(@Param("code") String code);
+	
 }	
 
 	

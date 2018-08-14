@@ -3,9 +3,12 @@ package com.sw.project.controller;
 import java.net.URI;
 import java.util.Collection;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +30,6 @@ import com.sw.project.repository.ProblemRepository;
 import com.sw.project.service.ProjectService;
 
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 
 @CrossOrigin(origins = "*")
 @RequestMapping(value = "/project")
@@ -37,6 +39,11 @@ public class ProjectController {
 	@Autowired
 	private ProjectService projectService;
 		
+	@PersistenceContext
+	private EntityManager em;
+	
+	private Logger logger =  LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private ProblemRepository problemRepository;
 	
@@ -92,6 +99,10 @@ public class ProjectController {
 		Collection<Problem> problemCollection = problemRepository.findByProblemWithCode((code));
 		
 		problemRepository.deleteInBatch(problemCollection); //problem부터 지우고
+
+		/*Long idx = projectRepository.getKeyByCode(code);	
+		deleteWithCascade(em,projectRepository.getKeyByCode(code));
+		*/
 		
 		if(projectService.deleteProjectByCode(code))
 			return new ResponseEntity<>(HttpStatus.OK); //project delete
@@ -105,5 +116,11 @@ public class ProjectController {
 		object.addProperty("result", ipt);
 		return new Gson().toJson(object);
 	}		
+	
+	private static void deleteWithCascade(EntityManager manager, Long key) {
+		
+		Project project = manager.find(Project.class, key);
+		manager.remove(project);
+	}
 
 }
