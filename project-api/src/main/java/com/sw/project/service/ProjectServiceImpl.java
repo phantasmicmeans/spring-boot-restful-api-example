@@ -2,6 +2,8 @@ package com.sw.project.service;
 
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +13,7 @@ import com.sw.project.repository.ProjectRepository;
 @Service("projectService")
 public class ProjectServiceImpl implements ProjectService{
 	
-	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Autowired
 	private ProjectRepository projectRepository;
 	
@@ -35,17 +37,32 @@ public class ProjectServiceImpl implements ProjectService{
 		return Optional.ofNullable(projectRepository.getProject(code));
 	}
 
+
 	@Override
-	public Boolean deleteProjectByCode(String code) {
-		
+	public Boolean deleteProject(String code) {
+		// TODO Auto-generated method stub
 		try {
-			projectRepository.deleteProjectByCodeInQuery(code);
+			projectRepository.deleteByCode(code);
+			logger.info("Code !!");
 			return true;
-			
 		}catch(Exception e) {
+			logger.info(e.getMessage());
 			return false;
 		}
 	}
-	
+
+	@Override
+	public Boolean updateProject(Project project) {
+		
+		if(projectRepository.saveAndFlush(project).equals(null)) 
+			return false;
+		
+		return true;
+	}
 
 }
+
+
+
+
+

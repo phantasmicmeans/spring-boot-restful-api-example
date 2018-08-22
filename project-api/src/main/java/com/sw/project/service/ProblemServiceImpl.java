@@ -1,6 +1,5 @@
 package com.sw.project.service;
 
-import java.util.Collection;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -18,6 +17,13 @@ public class ProblemServiceImpl implements ProblemService{
 	
 	@Autowired
 	private ProblemRepository problemRepository;
+	
+	@Override
+	public Optional<Problem> getProblemById(Long idx) {
+		// TODO Auto-generated method stub
+		
+		return Optional.ofNullable(problemRepository.getProblem(idx));
+	}
 
 	
 	@Override
@@ -31,36 +37,43 @@ public class ProblemServiceImpl implements ProblemService{
 	}
 
 	@Override
-	public void deleteProblem(String code) {
-		
-		problemRepository.deleteProblem(code);
-	}
-
-	@Override
 	public Boolean deleteAllProblemWithCode(String code) {
 		// TODO Auto-generated method stub
 		
-		Collection<Problem> list = problemRepository.findByProblemWithCode(code);
-
-		if(list.isEmpty()) return false;
-		else {
-			problemRepository.deleteInBatch(list);
+		try {
+			problemRepository.deleteAllProblemByCodeInQuery(code);
 			return true;
+			
+		}catch(Exception e) {
+			return false;
 		}
 	}
 
 	@Override
-	public Optional<Problem> getProblemById(Long idx) {
+	public Boolean deleteSubProblemByCodeInQuery(String code) {
 		// TODO Auto-generated method stub
-		
-		return Optional.ofNullable(problemRepository.getProblem(idx));
+		try {
+			problemRepository.deleteAllSubProblemByCodeInQuery(code);
+			return true;
+		}catch(Exception e) {
+			return false;
+		}
 	}
-
-
 	
-	
-
-	
+	@Override 
+	public Boolean deleteAllProblemAndSubWithCode(String code) {
+		
+		try{
+			problemRepository.deleteAllSubProblemByCodeInQuery(code);
+			problemRepository.deleteAllProblemByCodeInQuery(code);
+			return true;
+			
+		}catch(Exception e) {
+			return false;
+		}
+		
+		
+	}
 }
 
 

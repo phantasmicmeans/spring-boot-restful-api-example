@@ -21,10 +21,17 @@ public interface ProblemRepository extends JpaRepository<Problem, Long>{
 	@Query(value = "SELECT * FROM problem WHERE idx=?1", nativeQuery = true)
 	Problem getProblem(Long idx);
 	
+	Problem findByIdx(Long idx);
+	
 	@Modifying
 	@Transactional
 	@Query(value = "DELETE FROM problem WHERE code=?1", nativeQuery = true)
-	void deleteProblem(@Param("code") String code);
+	void deleteAllProblemByCodeInQuery(@Param("code") String code);
+	
+	@Modifying
+	@Transactional
+	@Query(value = "DELETE FROM subproblem WHERE pro_idx = (SELECT idx FROM problem WHERE code=?1)", nativeQuery = true)
+	void deleteAllSubProblemByCodeInQuery(@Param("code") String code);
 	
 }	
 

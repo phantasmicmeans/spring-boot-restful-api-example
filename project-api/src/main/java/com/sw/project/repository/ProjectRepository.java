@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.sw.project.domain.Project;
 
 @Repository
-public interface ProjectRepository extends JpaRepository<Project, String> {
+public interface ProjectRepository extends JpaRepository<Project, Long> {
 		
 	@Query(value = "SELECT * FROM project WHERE code=?1",  nativeQuery = true)
 	Project getProject(String code); 
@@ -19,10 +19,10 @@ public interface ProjectRepository extends JpaRepository<Project, String> {
 	@Query(value = "SELECT idx FROM project WHERE code=?1", nativeQuery = true)
 	Long getKeyByCode(String code);
 	
-	@Modifying
 	@Transactional
-	@Query("DELETE FROM Project p WHERE p.code=:code")
-	void deleteProjectByCodeInQuery(@Param("code") String code);
+	void deleteByCode(String code);
+
+	
 }
 
 /*
