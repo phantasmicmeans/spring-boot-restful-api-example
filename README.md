@@ -1,1 +1,1 @@
-플젝 중 
+README will be updated soon.
