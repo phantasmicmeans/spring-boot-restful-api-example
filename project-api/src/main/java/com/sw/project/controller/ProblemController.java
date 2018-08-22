@@ -2,6 +2,7 @@ package com.sw.project.controller;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.validation.Valid;
 
@@ -31,7 +32,7 @@ import com.sw.project.service.ProjectService;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@RequestMapping(value = "/problem")
+@RequestMapping(value = "api/problem")
 public class ProblemController {
 
 	@Autowired
@@ -90,7 +91,7 @@ public class ProblemController {
 		return new ResponseEntity<String> (getJson(result), HttpStatus.BAD_REQUEST);
 	}
 	
-	@RequestMapping(value = "/{code}", method = RequestMethod.DELETE)
+	/*@RequestMapping(value = "/{code}", method = RequestMethod.DELETE)
 	@ApiOperation(value = "code로 최근 문제 삭제", protocols = "http", notes = "code는 6자리 영문과 숫자조합")
 	public ResponseEntity<?> deleteProblem(@Valid @PathVariable("code") final String code){ 
 		//code가 "code"인 데이터들을 찾아와서 	
@@ -101,16 +102,16 @@ public class ProblemController {
 		problemService.deleteProblem(code);
 		
 		return new ResponseEntity<Void>(HttpStatus.OK);
-	}
+	}*/
 	
 	@RequestMapping(value = "/{code}/all", method = RequestMethod.DELETE)
-	@ApiOperation(value = "code로 모든 문제 삭제" , protocols = "http", notes = "code는 6자리 영문과 숫자조합")
+	@ApiOperation(value = "code로 모든 문제 삭제, " , protocols = "http", notes = "code는 6자리 영문과 숫자조합")
 	public ResponseEntity<?> deleteAllProblem(@Valid @PathVariable("code") final String code){
 		
 		if(code.length() < 6 || code.equals(""))
 			throw new DataFormatException("Please check your code");
 		
-		if(!problemService.deleteAllProblemWithCode(code))
+		if(!problemService.deleteAllProblemAndSubWithCode(code))
 			throw new ResourceNotFoundException("No Problem with that code");
 		
 		return new ResponseEntity<Void>(HttpStatus.OK);

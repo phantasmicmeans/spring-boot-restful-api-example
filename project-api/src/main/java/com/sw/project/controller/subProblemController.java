@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -22,9 +23,8 @@ import com.sw.project.service.ProblemService;
 import com.sw.project.service.subProblemService;
 
 @RestController
-@RequestMapping(value = "/subproblem")
+@RequestMapping(value = "api/subproblem")
 public class subProblemController {
-	
 	@Autowired
 	subProblemService subproblemService;
 	
@@ -48,15 +48,26 @@ public class subProblemController {
 		subProblem subproblem = new subProblem(problemBody.getContent(), problem);
 		
 		if(subproblemService.saveSubProblem(subproblem)) { //save
-			
 			problem.addSubProblem(subproblem);
 			URI location = ServletUriComponentsBuilder.fromCurrentRequest().buildAndExpand(subproblem.getIdx()).toUri();
 			return ResponseEntity.created(location).build();
 		}
-	
 		
 		return new ResponseEntity<Void> (HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	/*@RequestMapping(value="/{idx}/all", method = RequestMethod.GET,
+			produces = {"application/json"})
+	public ResponseEntity<?> getSubProblem(@Valid @PathVariable final String idx){
+		
+		if(idx == null) throw new DataFormatException("Please check your content, content must have idx");
+		
+		
+	}*/
+	
+	
+	
+	
 	
 	
 

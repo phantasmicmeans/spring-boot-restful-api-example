@@ -1,10 +1,7 @@
 package com.sw.project.controller;
 
 import java.net.URI;
-import java.util.Collection;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -22,7 +19,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.sw.project.domain.Problem;
 import com.sw.project.domain.Project;
 import com.sw.project.exception.DataFormatException;
 import com.sw.project.exception.ResourceNotFoundException;
@@ -32,15 +28,13 @@ import com.sw.project.service.ProjectService;
 import io.swagger.annotations.ApiOperation;
 
 @CrossOrigin(origins = "*")
-@RequestMapping(value = "/project")
+@RequestMapping(value = "api/project")
 @RestController
 public class ProjectController {
 	
 	@Autowired
 	private ProjectService projectService;
-		
-	@PersistenceContext
-	private EntityManager em;
+
 	
 	private Logger logger =  LoggerFactory.getLogger(this.getClass());
 	
@@ -96,18 +90,33 @@ public class ProjectController {
 		if(code.length() < 6 || code.equals(""))
 			throw new DataFormatException("Please Check your code");
 		
-		Collection<Problem> problemCollection = problemRepository.findByProblemWithCode((code));
+		if(!projectService.deleteProject(code)) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 		
-		problemRepository.deleteInBatch(problemCollection); //problem부터 지우고
+		return new ResponseEntity<>(HttpStatus.OK); //project delete
+		
+	}
+	
+	@RequestMapping(value ="/{code}", method = RequestMethod.PUT,
+			consumes = {"application/json"},
+			produces = {"application/json"})
+	@ApiOperation(value = "project 업데이트", protocols = "http", notes = "code로 project 변경, title 필요")
+	public ResponseEntity<?> updateProject(@Valid @PathVariable("code") final String code, @RequestBody Project project)
+	{
+		if(code.length() < 6 || code.equals(""))
+			throw new DataFormatException("Please Check your code");
 
-		/*Long idx = projectRepository.getKeyByCode(code);	
-		deleteWithCascade(em,projectRepository.getKeyByCode(code));
-		*/
+		Project pjt = projectService.findProjectByCode(code)
+								.orElseThrow(() -> new ResourceNotFoundException("No Project with that code"));
 		
-		if(projectService.deleteProjectByCode(code))
-			return new ResponseEntity<>(HttpStatus.OK); //project delete
+		pjt.setTitle(project.getTitle());
 		
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		if(!projectService.updateProject(pjt)) 
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			
+		return new ResponseEntity<>(HttpStatus.OK);
+		
 	}
 	
 	static String getJson(String ipt) { /*String to Json Converter*/ 
@@ -117,10 +126,5 @@ public class ProjectController {
 		return new Gson().toJson(object);
 	}		
 	
-	private static void deleteWithCascade(EntityManager manager, Long key) {
-		
-		Project project = manager.find(Project.class, key);
-		manager.remove(project);
-	}
 
 }
