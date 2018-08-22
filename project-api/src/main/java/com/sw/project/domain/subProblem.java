@@ -5,12 +5,15 @@ import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
 @Table(name="subproblem")
@@ -26,10 +29,13 @@ public class subProblem implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idx;
 	
+	//@ManyToOne(fetch = FetchType.LAZY, optional=false)
 	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "pro_idx", referencedColumnName = "idx", nullable = false)
-	private Problem problem;
+	private Problem problem; //Problem <-> Project ManyToOne bidirectional
 
+	@NotNull
+	@Size(max=200)
 	@Column(name="content", nullable = false)
 	private String content;
 	

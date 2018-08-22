@@ -14,6 +14,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -24,17 +26,20 @@ public class Project implements Serializable  {
 	
 	@Id
 	@Column(name = "idx")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idx;
 	
+	@Size(max=6)
     @Column(name = "code", unique=true, nullable=false) 
 	private String code;
 	
+	@NotNull
+	@Size(max = 200)
 	@Column(name = "title",nullable=false)
 	private String title;
 	
 	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set <Problem> problems = new HashSet<>();
+	private Set <Problem> problems = new HashSet<>(); //Project <-> Problems OneToMany
 
 	public Project() {
 	}
@@ -53,7 +58,10 @@ public class Project implements Serializable  {
 	public String getTitle() {
 		return title;
 	}
-	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public String getCode() {
 		return code;
 	}
@@ -66,6 +74,7 @@ public class Project implements Serializable  {
 	public void addProblem(Problem problem) {
 		problems.add(problem);
 	}
+	
 	public Set<Problem> getProblem() {
 		return problems;
 	}

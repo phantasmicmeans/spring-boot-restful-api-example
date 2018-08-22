@@ -25,7 +25,7 @@ public class Problem implements Serializable{
 
 	@Id
 	@Column(name = "idx")
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long idx;
 	
 	@Column(name = "title")
@@ -33,9 +33,9 @@ public class Problem implements Serializable{
 
 	@ManyToOne(cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "code", referencedColumnName = "code", nullable = false)
-	private Project project; //Problem은 Project에 Many to one이고, 
+	private Project project; //Problem <-> Project  Many to one 
 	
-	@OneToMany(mappedBy = "problem", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(mappedBy = "problem", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 	private Set<subProblem> subProblems = new HashSet<>();
 	
 	
