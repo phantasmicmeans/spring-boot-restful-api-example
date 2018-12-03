@@ -91,7 +91,7 @@ public class ProblemController {
 		return new ResponseEntity<String> (getJson(result), HttpStatus.BAD_REQUEST);
 	}
 	
-	/*@RequestMapping(value = "/{code}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "/{code}", method = RequestMethod.DELETE)
 	@ApiOperation(value = "code로 최근 문제 삭제", protocols = "http", notes = "code는 6자리 영문과 숫자조합")
 	public ResponseEntity<?> deleteProblem(@Valid @PathVariable("code") final String code){ 
 		//code가 "code"인 데이터들을 찾아와서 	
@@ -102,7 +102,7 @@ public class ProblemController {
 		problemService.deleteProblem(code);
 		
 		return new ResponseEntity<Void>(HttpStatus.OK);
-	}*/
+	}
 	
 	@RequestMapping(value = "/{code}/all", method = RequestMethod.DELETE)
 	@ApiOperation(value = "code로 모든 문제 삭제, " , protocols = "http", notes = "code는 6자리 영문과 숫자조합")
