@@ -1,3 +1,5 @@
+[![HitCount](http://hits.dwyl.io/phantasmicmeans/spring-boot-restful-api-example.svg)](http://hits.dwyl.io/phantasmicmeans/spring-boot-restful-api-example)
+
 # Spring Boot RESTful API - JPA Hibernate MySQL Example #
 *by S.M.Lee(phantasmicmeans)*
 
