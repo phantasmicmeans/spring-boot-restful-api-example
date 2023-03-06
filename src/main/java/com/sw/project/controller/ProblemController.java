@@ -1,11 +1,17 @@
 package com.sw.project.controller;
 
-import java.net.URI;
-import java.util.Collection;
-import java.util.Iterator;
-
-import javax.validation.Valid;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.sw.project.domain.Problem;
+import com.sw.project.domain.Project;
+import com.sw.project.exception.DataFormatException;
+import com.sw.project.exception.ElementNullException;
+import com.sw.project.exception.ResourceNotFoundException;
+import com.sw.project.repository.ProblemRepository;
+import com.sw.project.service.ProblemService;
+import com.sw.project.service.ProjectService;
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,18 +24,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.sw.project.domain.Problem;
-import com.sw.project.domain.Project;
-import com.sw.project.exception.DataFormatException;
-import com.sw.project.exception.ElementNullException;
-import com.sw.project.exception.ResourceNotFoundException;
-import com.sw.project.repository.ProblemRepository;
-import com.sw.project.service.ProblemService;
-import com.sw.project.service.ProjectService;
-
-import io.swagger.annotations.ApiOperation;
+import java.net.URI;
+import java.util.Collection;
 
 @RestController
 @RequestMapping(value = "api/problem")
@@ -44,11 +40,11 @@ public class ProblemController {
 	@Autowired
 	ProblemRepository problemRepository;
 	
-	private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	@RequestMapping(value = "/{code}", method = RequestMethod.GET,
 			produces = {"application/json"})
-	@ApiOperation(value = "code로 문제 조회", protocols = "http", notes = "code는 6자리 영문과 숫자조합")
+	@Operation(summary = "code로 문제 조회", description = "code는 6자리 영문과 숫자조합")
 	public ResponseEntity<Collection<Problem>> getProblemByCode(@Valid @PathVariable("code") final String code){
 		
 		if(code.length() < 6 || code.equals(""))
@@ -62,11 +58,11 @@ public class ProblemController {
 		return new ResponseEntity<Collection<Problem>> (problemCollection, HttpStatus.OK);
 			
 	}
-	
-	
-	@RequestMapping(value = "{code}" , method = RequestMethod.POST
-			,consumes = "application/json")
-	@ApiOperation(value = "문제 생성", protocols = "http", notes = "code는 6자리 영문과 숫자조합, problem parameter는 사용 X")
+
+
+	@RequestMapping(value = "{code}", method = RequestMethod.POST
+			, consumes = "application/json")
+	@Operation(summary = "문제 생성", description = "code는 6자리 영문과 숫자조합, problem parameter는 사용 X")
 	public ResponseEntity<?> saveProblem(@Valid @RequestBody Problem problem,
 										 @PathVariable("code")final String code){
 	
@@ -90,22 +86,23 @@ public class ProblemController {
 		String result = "Data Not Valid, Please Check Yout title";
 		return new ResponseEntity<String> (getJson(result), HttpStatus.BAD_REQUEST);
 	}
-	
+
 	@RequestMapping(value = "/{code}", method = RequestMethod.DELETE)
-	@ApiOperation(value = "code로 최근 문제 삭제", protocols = "http", notes = "code는 6자리 영문과 숫자조합")
-	public ResponseEntity<?> deleteProblem(@Valid @PathVariable("code") final String code){ 
+	@Operation(summary = "code로 최근 문제 삭제", description = "code는 6자리 영문과 숫자조합")
+	public ResponseEntity<?> deleteProblem(@Valid @PathVariable("code") final String code) {
 		//code가 "code"인 데이터들을 찾아와서 	
-		
-		if(code.length() < 6 || code.equals(""))
+
+		if (code.length() < 6 || code.equals(""))
 			throw new DataFormatException("Please check your code");
-				
-		problemService.deleteProblem(code);
-		
+
+//		problemService.deleteProblem(code);
+		problemService.deleteAllProblemWithCode(code);
+
 		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/{code}/all", method = RequestMethod.DELETE)
-	@ApiOperation(value = "code로 모든 문제 삭제, " , protocols = "http", notes = "code는 6자리 영문과 숫자조합")
+	@Operation(summary = "code로 모든 문제 삭제, ", description = "code는 6자리 영문과 숫자조합")
 	public ResponseEntity<?> deleteAllProblem(@Valid @PathVariable("code") final String code){
 		
 		if(code.length() < 6 || code.equals(""))
