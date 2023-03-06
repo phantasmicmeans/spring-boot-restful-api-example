@@ -1,9 +1,10 @@
 package com.sw.project.domain;
 
+import jakarta.persistence.AttributeConverter;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-import javax.persistence.AttributeConverter;
 
 public class LocalDateTimeAttributeConverter  implements AttributeConverter<LocalDateTime, Timestamp> {
 	
