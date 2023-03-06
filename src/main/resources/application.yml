@@ -16,7 +16,7 @@ spring:
       url: jdbc:mysql://localhost:3306/{YOUR-DATABASE-NAME}?useSSL=false
       username: {MYSQL-ID}
       password: {MYSQL-PASSWORD}
-      driver-class-name: com.mysql.jdbc.Driver
+      driver-class-name: com.mysql.cj.jdbc.Driver
       hikari:
         maximum-pool-size: 2
 
