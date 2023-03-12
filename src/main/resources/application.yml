@@ -1,24 +1,36 @@
 spring:
-    application:
+  application:
       name: project-api
        
 ## Hibernate Properties
 # The SQL dialect makes Hibernate generate better SQL for the chosen database
-    jpa: 
+    jpa:
       properties:
         hibernate:
-          dialect: org.hibernate.dialect.MySQL5InnoDBDialect
-# Hibernate ddl auto (create, create-drop, validate, update)
+          dialect: org.hibernate.dialect.MySQLDialect
+          format_sql: true
+      # Hibernate ddl auto (create, create-drop, validate, update)
       hibernate:
         ddl-auto: update
-        
-    datasource:
-      url: jdbc:mysql://localhost:3306/{YOUR-DATABASE-NAME}?useSSL=false
-      username: {MYSQL-ID}
-      password: {MYSQL-PASSWORD}
-      driver-class-name: com.mysql.jdbc.Driver
-      hikari:
-        maximum-pool-size: 2
+
+      show-sql: true
+  datasource:
+    url: jdbc:mysql://{YOUR_MSQL_SERVER}:3306/{DATABASE NAME}?useSSL=false
+    username: { YOUR_MYSQL_ID }
+    password: { YOUR_MYSQL_PASSWORD }
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 2
 
 server:
   port: 8080
+
+application-description: '@project.description@'
+application-version: '@project.version@'
+# swagger-ui custom path
+springdoc:
+  version: '@springdoc.version@'
+  swagger-ui:
+    path: /swagger-ui
+  api-docs:
+    path: /v3/api-docs

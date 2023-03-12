@@ -1,21 +1,14 @@
 package com.sw.project.domain;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 
 @Entity
@@ -39,7 +32,7 @@ public class Project implements Serializable  {
 	private String title;
 	
 	@OneToMany(mappedBy = "project", cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, orphanRemoval = true)
-	private Set <Problem> problems = new HashSet<>(); //Project <-> Problems OneToMany
+	private final Set <Problem> problems = new HashSet<>(); //Project <-> Problems OneToMany
 
 	public Project() {
 	}
@@ -97,7 +90,7 @@ public class Project implements Serializable  {
 		StringBuffer buf = new StringBuffer();
 		for(int i=0;i<6;i++){
 		    if(rnd.nextBoolean())
-		        buf.append((char)((int)(rnd.nextInt(26))+97));
+		        buf.append((char)(rnd.nextInt(26) +97));
 		    else
 		        buf.append((rnd.nextInt(10)));
 		}
